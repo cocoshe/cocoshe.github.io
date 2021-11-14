@@ -6,7 +6,18 @@
     <description>Recent content in Posts on coco&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 09 Sep 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 14 Nov 2021 19:32:57 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Scrapy</title>
+      <link>https://example.com/p/scrapy/</link>
+      <pubDate>Sun, 14 Nov 2021 19:32:57 +0800</pubDate>
+      
+      <guid>https://example.com/p/scrapy/</guid>
+      <description>Scrapy Scrapy is written in pure Python and depends on a few key Python packages (among others):
+ lxml, an efficient XML and HTML parser parsel, an HTML/XML data extraction library written on top of lxml, w3lib, a multi-purpose helper for dealing with URLs and web page encodings twisted, an asynchronous networking framework cryptography and pyOpenSSL, to deal with various network-level security needs  官方doc
+ 先scrapy startproject tutorial下好tutorial项目，然后自己配置一下venv进行pip3 install scrapy</description>
+    </item>
+    
     <item>
       <title>Chinese Test</title>
       <link>https://example.com/p/test-chinese/</link>
