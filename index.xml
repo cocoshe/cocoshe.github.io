@@ -6,7 +6,309 @@
         <description>Recent content on coco&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Fri, 26 Nov 2021 11:02:10 +0800</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Mon, 07 Feb 2022 19:54:18 +0800</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Docker</title>
+        <link>https://example.com/p/docker/</link>
+        <pubDate>Mon, 07 Feb 2022 19:54:18 +0800</pubDate>
+        
+        <guid>https://example.com/p/docker/</guid>
+        <description>&lt;img src="https://example.com/p/docker/1.png" alt="Featured image of post Docker" /&gt;&lt;h2 id=&#34;docker-commands&#34;&gt;Docker Commands&lt;/h2&gt;
+&lt;p&gt;启动docker服务&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;sudo service docker start
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;镜像&#34;&gt;镜像&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;docker images
+docker pull &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;image_name&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;容器&#34;&gt;容器&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker ps		# 运行中的容器
+docker ps -a 	# 所有容器，包括关掉的
+exit() 			# 退出容器，会关闭
+ctrl + p + q  	# 退出容器，不会关闭
+
+docker pull [name]
+
+docker start [id]	# 结合docker ps -a,重启一个容器
+docker attach [id]	# 进入一个正在运行的容器
+docker exec -it [id] /bin/bash  # 进入一个运行中的容器
+docker
+
+docker commit -m &amp;quot;&amp;quot; -a &amp;quot;author&amp;quot; [id] [name]:[TAG]  # 容器打包成一个镜像，他会出现在docker images里面
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;容器持久化(数据卷)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;docker run -it -v 主机目录:容器目录 &lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;image&lt;span class=&#34;o&#34;&gt;]&lt;/span&gt; /bin/bash
+
+example:
+docker run -it -v /home/ceshi:/home centos /bin/bash
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;命令混用：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;docker run -d -p 3310:3306 -v /home/mysql/conf:/etc/mysql/conf.d -v /home/mysql/data:/var/lib/mysql -e &lt;span class=&#34;nv&#34;&gt;MYSQL_ROOT_PASSWORD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;123456&lt;/span&gt; --name mysql01 mysql
+&lt;span class=&#34;c1&#34;&gt;# -d:后台运行&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# -v:挂载&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# -e:环境设置&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ul&gt;
+&lt;li&gt;具体挂载和匿名挂载&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 匿名挂载&lt;/span&gt;
+-v 容器内路径！就是没有写主机路径，然后他会自动生成很难看的名字
+docker run -d -P --name nginx01 -v /etc/nginx nginx
+
+&lt;span class=&#34;c1&#34;&gt;# 查看所有的volume的情况&lt;/span&gt;
+docker volume ls
+
+&lt;span class=&#34;c1&#34;&gt;# 具名挂载，相对于路径，路径是要有一个‘/’的，这里直接写名字了&lt;/span&gt;
+docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx nginx
+
+&lt;span class=&#34;c1&#34;&gt;# 看具体目录&lt;/span&gt;
+docker volume inspect juming-nginx
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;拓展：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;ro: &lt;span class=&#34;nb&#34;&gt;readonly&lt;/span&gt;
+rw: &lt;span class=&#34;nb&#34;&gt;read&lt;/span&gt; write &lt;span class=&#34;c1&#34;&gt;# 默认&lt;/span&gt;
+都是对于容器来说的，也就是说主机一定是最高权限
+
+docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx:ro nginx
+
+docker run -d -P --name nginx02 -v juming-nginx:/etc/nginx:rw nginx
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;dockerfile-demo&#34;&gt;Dockerfile demo&lt;/h2&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-dockerfile&#34; data-lang=&#34;dockerfile&#34;&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; centos&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;VOLUME&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;volume01&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;volume02&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;CMD&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;echo&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;----end----&amp;#34;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;CMD&lt;/span&gt; /bin/bash&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;多个mysql实现数据共享(使用 &amp;ndash;volumes-from命令)&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;example:
+docker run -d -p 3310:3306 -e &lt;span class=&#34;nv&#34;&gt;MYSQL_ROOT_PASSWORD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;123456&lt;/span&gt; --name mysql02 --volumes-from mysql01 mysql:5.7
+&lt;span class=&#34;c1&#34;&gt;# 意思就是开一个mysql02，并且在mysql01中找到“已经挂载到本地主机的卷”，不会把所有文件同步&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;dockerfile&#34;&gt;Dockerfile&lt;/h2&gt;
+&lt;p&gt;构建步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;编写一个Dockerfile 文件&lt;/li&gt;
+&lt;li&gt;docker build 构建成一个镜像&lt;/li&gt;
+&lt;li&gt;docker run 运行镜像&lt;/li&gt;
+&lt;li&gt;docker push 发布镜像(DockerHub、阿里云镜像仓库)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;dockerfile构建过程&#34;&gt;Dockerfile构建过程&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;基础知识：&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;指令必须是大写字母&lt;/li&gt;
+&lt;li&gt;执行从上到下&lt;/li&gt;
+&lt;li&gt;#表示注释&lt;/li&gt;
+&lt;li&gt;每一个指令都是一层&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;example：&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 134; 
+			flex-basis: 322px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/docker/image-20220124003316279.png&#34; data-size=&#34;607x452&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/docker/image-20220124003316279.png&#34;
+			width=&#34;607&#34;
+			height=&#34;452&#34;
+			srcset=&#34;https://example.com/p/docker/image-20220124003316279_hu5df53a1ece68cdfea5cc614e5cb4e763_145797_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124003316279_hu5df53a1ece68cdfea5cc614e5cb4e763_145797_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20220124003316279&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20220124003316279&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&#34;常用指令&#34;&gt;常用指令&lt;/h3&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 263; 
+			flex-basis: 633px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/docker/image-20220124004209145.png&#34; data-size=&#34;889x337&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/docker/image-20220124004209145.png&#34;
+			width=&#34;889&#34;
+			height=&#34;337&#34;
+			srcset=&#34;https://example.com/p/docker/image-20220124004209145_hu237caaa0f169da32c7351c4df81fbb98_232736_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124004209145_hu237caaa0f169da32c7351c4df81fbb98_232736_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20220124004209145&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20220124004209145&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 178; 
+			flex-basis: 429px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/docker/image-20220124003758969.png&#34; data-size=&#34;1032x577&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/docker/image-20220124003758969.png&#34;
+			width=&#34;1032&#34;
+			height=&#34;577&#34;
+			srcset=&#34;https://example.com/p/docker/image-20220124003758969_hud4acd096eb3d7b63ea818d4f23169fde_412981_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124003758969_hud4acd096eb3d7b63ea818d4f23169fde_412981_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20220124003758969&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20220124003758969&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 149; 
+			flex-basis: 357px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/docker/image-20220124110414254.png&#34; data-size=&#34;1140x765&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/docker/image-20220124110414254.png&#34;
+			width=&#34;1140&#34;
+			height=&#34;765&#34;
+			srcset=&#34;https://example.com/p/docker/image-20220124110414254_hu25212a2af48c332cd6beb8558fa7a9f4_122240_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124110414254_hu25212a2af48c332cd6beb8558fa7a9f4_122240_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20220124110414254&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20220124110414254&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h3 id=&#34;发布自己的镜像&#34;&gt;发布自己的镜像&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;DockerHub&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker login
+docker tag [id] [username]/[image]:[tag]
+docker push [username]/[image]:[TAG]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 122; 
+			flex-basis: 293px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/docker/image-20220124104453083.png&#34; data-size=&#34;778x637&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/docker/image-20220124104453083.png&#34;
+			width=&#34;778&#34;
+			height=&#34;637&#34;
+			srcset=&#34;https://example.com/p/docker/image-20220124104453083_hu8d67eff3c65652cc3d23a4be9a8bd258_220259_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124104453083_hu8d67eff3c65652cc3d23a4be9a8bd258_220259_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20220124104453083&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20220124104453083&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;h2 id=&#34;docker网络&#34;&gt;Docker网络&lt;/h2&gt;
+&lt;h3 id=&#34;理解docker0&#34;&gt;理解Docker0&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;ip addr
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;原理&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;我们每启动一个docker容器，docker就会给docker容器分配一个ip，我们只要安装了docker就会有一个网卡docker0&lt;/p&gt;
+&lt;p&gt;桥接模式，使用的技术是veth-pair技术！&lt;/p&gt;
+&lt;p&gt;启动一个容器，就会有一个veth-pair&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;# 我们会发现这个容器带来的网卡，都是一对对的
+# veth-pair 就是一对的虚拟设备接口，他们都是成对出现的，一段连着协议，一段彼此相连
+# 正因为有这个特性，veth-pair 充当一个桥梁连接各种虚拟网络设备
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 154; 
+			flex-basis: 370px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/docker/image-20220124131030034.png&#34; data-size=&#34;973x630&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/docker/image-20220124131030034.png&#34;
+			width=&#34;973&#34;
+			height=&#34;630&#34;
+			srcset=&#34;https://example.com/p/docker/image-20220124131030034_huf3b29c214593a95734778aa3f154e733_68490_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124131030034_huf3b29c214593a95734778aa3f154e733_68490_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20220124131030034&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20220124131030034&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;两个docker容器共用一个路由器，docker0
+所有的容器不指定网络的情况下，都是docker0路由的，docker会给我们的容器分配一个默认的可用ip&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;小结&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 138; 
+			flex-basis: 333px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/docker/image-20220124131533162.png&#34; data-size=&#34;983x708&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/docker/image-20220124131533162.png&#34;
+			width=&#34;983&#34;
+			height=&#34;708&#34;
+			srcset=&#34;https://example.com/p/docker/image-20220124131533162_hu832e6256b2e157abfed71319956bee45_68267_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124131533162_hu832e6256b2e157abfed71319956bee45_68267_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20220124131533162&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20220124131533162&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&amp;ndash;link命令：建立容器名的访问&lt;/p&gt;
+&lt;p&gt;单向，本来要ping一个ip的，现在可以ping一个名字，相当于在hosts里面加一个映射&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;自定义网络&#34;&gt;自定义网络&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;查看所有的docker网络&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;docker network ls
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;strong&gt;网络模式&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;bridge：桥接docker（默认）
+none：不配置网络
+host：和宿主机共享网络
+container：容器网络连通！（用的少！局限很大）&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;测试&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 我们直接启动的命令 --net bridge,而这个就是我们的docker0&lt;/span&gt;
+docker run -d -P --name tomcat --net bridge tomcat
+
+&lt;span class=&#34;c1&#34;&gt;# docker0特点，默认，域名不能访问， --link可以打通连接！&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;服务器部署&#34;&gt;服务器部署&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;注意：监听的地址不是localhost，要用ip addr看一眼！！！或者进hosts看&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;figure 
+	
+		class=&#34;gallery-image&#34; 
+		style=&#34;
+			flex-grow: 222; 
+			flex-basis: 533px&#34;
+	&gt;
+	&lt;a href=&#34;https://example.com/p/docker/image-20220125184132253.png&#34; data-size=&#34;489x220&#34;&gt;
+		&lt;img src=&#34;https://example.com/p/docker/image-20220125184132253.png&#34;
+			width=&#34;489&#34;
+			height=&#34;220&#34;
+			srcset=&#34;https://example.com/p/docker/image-20220125184132253_huff451025db0665b00428abbeec40ab45_14536_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220125184132253_huff451025db0665b00428abbeec40ab45_14536_1024x0_resize_box_3.png 1024w&#34;
+			loading=&#34;lazy&#34;
+			alt=&#34;image-20220125184132253&#34;&gt;
+	&lt;/a&gt;
+	
+	&lt;figcaption&gt;image-20220125184132253&lt;/figcaption&gt;
+	
+&lt;/figure&gt;&lt;/p&gt;
+&lt;p&gt;应该监听在docker中的地址，docker0(主机)可以访问到它，主机也可以通过&lt;strong&gt;主机的localhost&lt;/strong&gt;来找到它(它能监听到)&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>VAE</title>
         <link>https://example.com/p/vae/</link>
         <pubDate>Fri, 26 Nov 2021 11:02:10 +0800</pubDate>
@@ -998,110 +1300,6 @@ class QuotesSpider(scrapy.Spider):
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;/section&gt;</description>
-        </item>
-        <item>
-        <title>Rich Content</title>
-        <link>https://example.com/p/rich-content/</link>
-        <pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://example.com/p/rich-content/</guid>
-        <description>&lt;p&gt;Hugo ships with several &lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/content-management/shortcodes/#use-hugo-s-built-in-shortcodes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Built-in Shortcodes&lt;/a&gt; for rich content, along with a &lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/about/hugo-and-gdpr/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Privacy Config&lt;/a&gt; and a set of Simple Shortcodes that enable static and no-JS versions of various social media embeds.&lt;/p&gt;
-&lt;hr&gt;
-&lt;h2 id=&#34;youtube-privacy-enhanced-shortcode&#34;&gt;YouTube Privacy Enhanced Shortcode&lt;/h2&gt;
-&lt;div class=&#34;video-wrapper&#34;&gt;
-    &lt;iframe loading=&#34;lazy&#34; 
-            src=&#34;https://www.youtube.com/embed/ZJthWmvUzzc&#34; 
-            allowfullscreen 
-            title=&#34;YouTube Video&#34;
-    &gt;
-    &lt;/iframe&gt;
-&lt;/div&gt;
-
-&lt;!-- raw HTML omitted --&gt;
-&lt;hr&gt;
-&lt;h2 id=&#34;twitter-simple-shortcode&#34;&gt;Twitter Simple Shortcode&lt;/h2&gt;
-
-    &lt;style type=&#34;text/css&#34;&gt;
-      .twitter-tweet {
-        font: 14px/1.45 -apple-system,BlinkMacSystemFont,&#34;Segoe UI&#34;,Roboto,Oxygen-Sans,Ubuntu,Cantarell,&#34;Helvetica Neue&#34;,sans-serif;
-        border-left: 4px solid #2b7bb9;
-        padding-left: 1.5em;
-        color: #555;
-      }
-      .twitter-tweet a {
-        color: #2b7bb9;
-        text-decoration: none;
-      }
-      blockquote.twitter-tweet a:hover,
-      blockquote.twitter-tweet a:focus {
-        text-decoration: underline;
-      }
-    &lt;/style&gt;
-  &lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;“In addition to being more logical, asymmetry has the advantage that its complete appearance is far more optically effective than symmetry.”&lt;br&gt;— Jan Tschichold &lt;a href=&#34;https://t.co/gcv7SrhvJb&#34;&gt;pic.twitter.com/gcv7SrhvJb&lt;/a&gt;&lt;/p&gt;&amp;mdash; Graphic Design History (@DesignReviewed) &lt;a href=&#34;https://twitter.com/DesignReviewed/status/1085870671291310081?ref_src=twsrc%5Etfw&#34;&gt;January 17, 2019&lt;/a&gt;&lt;/blockquote&gt;
-
-&lt;!-- raw HTML omitted --&gt;
-&lt;hr&gt;
-&lt;h2 id=&#34;vimeo-simple-shortcode&#34;&gt;Vimeo Simple Shortcode&lt;/h2&gt;
-
-
-
-
-
-
-&lt;style&gt;
-.__h_video {
-   position: relative;
-   padding-bottom: 56.23%;
-   height: 0;
-   overflow: hidden;
-   width: 100%;
-   background: #000;
-}
-.__h_video img {
-   width: 100%;
-   height: auto;
-   color: #000;
-}
-.__h_video .play {
-   height: 72px;
-   width: 72px;
-   left: 50%;
-   top: 50%;
-   margin-left: -36px;
-   margin-top: -36px;
-   position: absolute;
-   cursor: pointer;
-}
-&lt;/style&gt;
-
-
-&lt;div class=&#34;s_video_simple __h_video&#34;&gt;
-&lt;a href=&#34;https://vimeo.com/4.8912912e&amp;#43;07&#34; rel=&#34;noopener&#34; target=&#34;_blank&#34;&gt;
-
-
-&lt;img src=&#34;https://i.vimeocdn.com/video/337401969-979f0cc9f55fdf305fb8984e90d92639ec9d7ecc4c9dfbc6536e28edb43784ce-d_640&#34; srcset=&#34;https://i.vimeocdn.com/video/337401969-979f0cc9f55fdf305fb8984e90d92639ec9d7ecc4c9dfbc6536e28edb43784ce-d_640 1x, https://i.vimeocdn.com/video/337401969-979f0cc9f55fdf305fb8984e90d92639ec9d7ecc4c9dfbc6536e28edb43784ce-d_640 2x&#34; alt=&#34;Sing Jan Swing - Kinetic Type&#34;&gt;
-&lt;div class=&#34;play&#34;&gt;&lt;svg version=&#34;1&#34; xmlns=&#34;http://www.w3.org/2000/svg&#34; viewBox=&#34;0 0 61 61&#34;&gt;&lt;circle cx=&#34;30.5&#34; cy=&#34;30.5&#34; r=&#34;30.5&#34; opacity=&#34;.8&#34; fill=&#34;#000&#34;&gt;&lt;/circle&gt;&lt;path d=&#34;M25.3 19.2c-2.1-1.2-3.8-.2-3.8 2.2v18.1c0 2.4 1.7 3.4 3.8 2.2l16.6-9.1c2.1-1.2 2.1-3.2 0-4.4l-16.6-9z&#34; fill=&#34;#fff&#34;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/div&gt;&lt;/a&gt;&lt;/div&gt;
-&lt;h2 id=&#34;bilibilibi-shortcode&#34;&gt;bilibilibi Shortcode&lt;/h2&gt;
-
-
-
-
-
-
-    
-
-
-&lt;div class=&#34;video-wrapper&#34;&gt;
-    &lt;iframe src=&#34;https://player.bilibili.com/player.html?as_wide=1&amp;amp;high_quality=1&amp;amp;page=1&amp;aid=498363026&#34;
-            scrolling=&#34;no&#34;
-            frameborder=&#34;no&#34;
-            framespacing=&#34;0&#34;
-            allowfullscreen=&#34;true&#34;
-    &gt;
-    &lt;/iframe&gt;
-&lt;/div&gt;</description>
         </item>
         <item>
         <title>Placeholder Text</title>

@@ -6,7 +6,17 @@
     <description>Recent content in Posts on coco&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Nov 2021 11:02:10 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 07 Feb 2022 19:54:18 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker</title>
+      <link>https://example.com/p/docker/</link>
+      <pubDate>Mon, 07 Feb 2022 19:54:18 +0800</pubDate>
+      
+      <guid>https://example.com/p/docker/</guid>
+      <description>Docker Commands 启动docker服务
+sudo service docker start 镜像 docker images docker pull [image_name] 容器 docker ps	# 运行中的容器 docker ps -a # 所有容器，包括关掉的 exit() # 退出容器，会关闭 ctrl + p + q # 退出容器，不会关闭 docker pull [name] docker start [id]	# 结合docker ps -a,重启一个容器 docker attach [id]	# 进入一个正在运行的容器 docker exec -it [id] /bin/bash # 进入一个运行中的容器 docker docker commit -m &amp;quot;&amp;quot; -a &amp;quot;author&amp;quot; [id] [name]:[TAG] # 容器打包成一个镜像，他会出现在docker images里面   容器持久化(数据卷)</description>
+    </item>
+    
     <item>
       <title>VAE</title>
       <link>https://example.com/p/vae/</link>
@@ -79,17 +89,6 @@ import torch import torch.nn as nn class Identity(nn.Module): def __init__(self)
       
       <guid>https://example.com/p/markdown-syntax-guide/</guid>
       <description>&lt;p&gt;This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.&lt;/p&gt;</description>
-    </item>
-    
-    <item>
-      <title>Rich Content</title>
-      <link>https://example.com/p/rich-content/</link>
-      <pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://example.com/p/rich-content/</guid>
-      <description>&lt;p&gt;Hugo ships with several &lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/content-management/shortcodes/#use-hugo-s-built-in-shortcodes&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Built-in Shortcodes&lt;/a&gt; for rich content, along with a &lt;a class=&#34;link&#34; href=&#34;https://gohugo.io/about/hugo-and-gdpr/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;Privacy Config&lt;/a&gt; and a set of Simple Shortcodes that enable static and no-JS versions of various social media embeds.&lt;/p&gt;</description>
     </item>
     
     <item>
