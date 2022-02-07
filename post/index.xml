@@ -6,7 +6,34 @@
     <description>Recent content in Posts on coco&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 26 Nov 2021 01:27:04 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 26 Nov 2021 11:02:10 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>VAE</title>
+      <link>https://example.com/p/vae/</link>
+      <pubDate>Fri, 26 Nov 2021 11:02:10 +0800</pubDate>
+      
+      <guid>https://example.com/p/vae/</guid>
+      <description>VAE 参考博客
+一些解读
+PCA  vae 
+ PCA的解释：原向量x乘以矩阵W得到中间编码c，再乘以W的转置，得到x head，得到的x head希望与原x越接近越好，有一点要注意，从x到c的变换过程是线性的。
+ Deep Auto Encoder  和PCA类似，只是网络层数更深，变换是非线性的（因为可以加入一些非线性的激活函数），Deep Auto Encoder变成成了如下的样子：
+  
+中间有个很窄的hidden layer的输出就是压缩之后的code，当然以bottle layer对称的W不必要互为转置，也不要求一定要用RBM初始化参数，直接train，效果也很好。
+下面来看一下，对于MNIST手写数字数据集用像素点、PCA、Deep Auto Encoder三种方式分别做tSNE的展现图
+ 
+右上角为deep auto encoder之后做tSNE，所有的数字都分的很开，效果比较好。
+ 总结一下，PCA和Deep auto encoder所做的事都类似，就是把原数据压缩到一个低维向量，让后再反解回来，反解回来的值希望与原来的值越接近越好。
+PCA像是比较基础，然后Deep auto encoder像是对PCA进行魔改
+ Auto Encoder用于异常检测 ​ 对于自动编码器用于异常检测，可以参考《Variational Autoencoder based Anomaly Detection using Reconstruction Probability》这篇论文 ，论文地址：http://dm.snu.ac.kr/static/docs/TR/SNUDM-TR-2015-03.pdf ，论文标题大概可以这样翻译：基于变分自动编码器重建概率的异常检测。 ​ 文中不是直接从变分自动编码器切入，而是先介绍自动编码器，论文言简意赅，我们先来看看论文中对Auto Encoder的训练过程的描述
+下面来看，如果将Auto Encoder用于异常检测，还是先看公式
+ 
+ 就是先训练一个encode，然后进行推理，得到loss，然后反向传播
+  
+说明：
+ 先用正常的数据集训练一个Auto Encoder 用训练出的Auto Encoder计算异常数据的重建误差，重建误差大于某个阀值α，则为异常，否则则正常。  文中有这样一段描述：</description>
+    </item>
+    
     <item>
       <title>手撸一下Resnet18</title>
       <link>https://example.com/p/%E6%89%8B%E6%92%B8%E4%B8%80%E4%B8%8Bresnet18/</link>

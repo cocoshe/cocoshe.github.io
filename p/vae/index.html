@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content='Variational Autoencoders Explained'><title>VAE</title>
+
+<link rel='canonical' href='https://example.com/p/vae/'>
+
+<link rel="stylesheet" href="/scss/style.min.css"><meta property='og:title' content='VAE'>
+<meta property='og:description' content='Variational Autoencoders Explained'>
+<meta property='og:url' content='https://example.com/p/vae/'>
+<meta property='og:site_name' content='coco&#39;s blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2021-11-26T11:02:10&#43;08:00'/><meta property='article:modified_time' content='2021-11-26T11:02:10&#43;08:00'/><meta property='og:image' content='https://pic1.zhimg.com/80/v2-d72d012f50ad64ff3a7de3e7e6c56a64_720w.png' />
+<meta name="twitter:title" content="VAE">
+<meta name="twitter:description" content="Variational Autoencoders Explained"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='https://pic1.zhimg.com/80/v2-d72d012f50ad64ff3a7de3e7e6c56a64_720w.png' />
+    <link rel="shortcut icon" href="assets/img/1.png" />
+
+    </head>
+    <body class="
+    article-page has-toc
+">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex 
+    
+        extended
+    
+">
+    
+        <div id="article-toolbar">
+            <a href="/" class="back-home">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="15 6 9 12 15 18" />
+</svg>
+
+
+
+                <span>Back</span>
+            </a>
+        </div>
+    
+<main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/vae/">
+                
+                    <img src="https://pic1.zhimg.com/80/v2-d72d012f50ad64ff3a7de3e7e6c56a64_720w.png" loading="lazy" alt="Featured image of post VAE" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+
+    <h2 class="article-title">
+        <a href="/p/vae/">VAE</a>
+    </h2>
+
+    
+    <h3 class="article-subtitle">
+        Variational Autoencoders Explained
+    </h3>
+    
+
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Nov 26, 2021</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    1 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+</div>
+</header>
+
+    <section class="article-content">
+    <h1 id="vae">VAE</h1>
+<p><a class="link" href="https://blog.csdn.net/dong_lxkm/article/details/81212449"  target="_blank" rel="noopener"
+    >参考博客</a></p>
+<p><a class="link" href="https://www.sohu.com/a/226209674_500659"  target="_blank" rel="noopener"
+    >一些解读</a></p>
+<h3 id="pca">PCA</h3>
+<p><figure 
+	>
+	<a href="https://oscimg.oschina.net/oscnet/34fe52a3a0f32e30a08d0ce2d03e0163c06.jpg" >
+		<img src="https://oscimg.oschina.net/oscnet/34fe52a3a0f32e30a08d0ce2d03e0163c06.jpg"
+			
+			
+			
+			loading="lazy"
+			alt="vae">
+	</a>
+	
+	<figcaption>vae</figcaption>
+	
+</figure></p>
+<blockquote>
+<p>PCA的解释：原向量x乘以矩阵W得到中间编码c，再乘以W的转置，得到x head，得到的x head希望与原x越接近越好，有一点要注意，从x到c的变换过程是线性的。</p>
+</blockquote>
+<h3 id="deep-auto-encoder">Deep Auto Encoder</h3>
+<blockquote>
+<p>和PCA类似，只是网络层数更深，变换是非线性的（因为可以加入一些非线性的激活函数），Deep Auto Encoder变成成了如下的样子：</p>
+</blockquote>
+<p><figure 
+	>
+	<a href="https://oscimg.oschina.net/oscnet/0be9d68fe88df8da0286423d865a466f1de.jpg" >
+		<img src="https://oscimg.oschina.net/oscnet/0be9d68fe88df8da0286423d865a466f1de.jpg"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<p><strong>中间有个很窄的hidden layer的输出就是压缩之后的code，当然以bottle layer对称的W不必要互为转置，也不要求一定要用RBM初始化参数，直接train，效果也很好。</strong></p>
+<p>下面来看一下，对于MNIST手写数字数据集用像素点、PCA、Deep Auto Encoder三种方式分别做tSNE的展现图</p>
+<p><figure 
+	>
+	<a href="https://oscimg.oschina.net/oscnet/2e9f5e704b73975c08b88daf598e9eb2510.jpg" >
+		<img src="https://oscimg.oschina.net/oscnet/2e9f5e704b73975c08b88daf598e9eb2510.jpg"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<p>右上角为deep auto encoder之后做tSNE，所有的数字都分的很开，效果比较好。</p>
+<blockquote>
+<p>总结一下，PCA和Deep auto encoder所做的事都类似，就是把原数据压缩到一个低维向量，让后再反解回来，反解回来的值希望与原来的值越接近越好。</p>
+<p>PCA像是比较基础，然后Deep auto encoder像是对PCA进行魔改</p>
+</blockquote>
+<h3 id="auto-encoder用于异常检测">Auto Encoder用于异常检测</h3>
+<p>​    对于自动编码器用于异常检测，可以参考《Variational Autoencoder based Anomaly Detection using Reconstruction Probability》这篇论文 ，论文地址：http://dm.snu.ac.kr/static/docs/TR/SNUDM-TR-2015-03.pdf ，论文标题大概可以这样翻译：基于变分自动编码器重建概率的异常检测。
+​    文中不是直接从变分自动编码器切入，而是先介绍自动编码器，论文言简意赅，我们先来看看论文中对Auto Encoder的训练过程的描述</p>
+<p>下面来看，如果将Auto Encoder用于异常检测，还是先看公式</p>
+<p><figure 
+	>
+	<a href="https://oscimg.oschina.net/oscnet/463a9fc46583d82fa8d1cff81e7a22d97d8.jpg" >
+		<img src="https://oscimg.oschina.net/oscnet/463a9fc46583d82fa8d1cff81e7a22d97d8.jpg"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<blockquote>
+<p>就是先训练一个encode，然后进行推理，得到loss，然后反向传播</p>
+</blockquote>
+<p><figure 
+	>
+	<a href="https://oscimg.oschina.net/oscnet/71940cef64b467d87a6a39599b45cc5d6d7.jpg" >
+		<img src="https://oscimg.oschina.net/oscnet/71940cef64b467d87a6a39599b45cc5d6d7.jpg"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<p>说明：</p>
+<ol>
+<li>先用正常的数据集训练一个Auto Encoder</li>
+<li>用训练出的Auto Encoder计算异常数据的重建误差，重建误差大于某个阀值α，则为异常，否则则正常。</li>
+</ol>
+<p>文中有这样一段描述：</p>
+<blockquote>
+<p>Autoencoder based anomaly detection is a deviation based anomaly detection method using  semi-supervised learning. It uses the reconstruction error as the anomaly score. Data points  with high reconstruction are considered to be anomalies.Only data with normal instances are used to train the autoencoder</p>
+</blockquote>
+<p>这段描述指出了两点：</p>
+<p>1、半监督，用正常的数据训练一个Auto Encoder</p>
+<p>2、重建误差高的数据为异常数据</p>
+<p>普通Deep Auto Encoder有个缺陷，<strong>通俗的话来讲就是模型看过的类似的数据它知道，模型没看过的数据，几乎不可能能知道</strong>，那变分编码器，就可能解决了一部分问题，通过用分布相似来解释这个问题，请看下面的公式：</p>
+<p>训练：</p>
+<p><figure 
+	>
+	<a href="https://oscimg.oschina.net/oscnet/9d56c2d1056874191768ff74981a0b63212.jpg" >
+		<img src="https://oscimg.oschina.net/oscnet/9d56c2d1056874191768ff74981a0b63212.jpg"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<blockquote>
+<p>补充E等式右边第一项知识：<a class="link" href="https://blog.csdn.net/qq_32146369/article/details/105590936"  target="_blank" rel="noopener"
+    >博客连接</a></p>
+<p>qφ（z | x）是近似后验，pθ（z）是潜在变量z的先验分布。<a class="link" href="https://www.cnblogs.com/asawang/p/10407551.html"  target="_blank" rel="noopener"
+    >论文翻译</a></p>
+<p>今天开始来讲相对熵，我们知道信息熵反应了一个系统的有序化程度，一个系统越是有序，那么它的信息熵就越低，反之就越高。下面是熵的定义  　　</p>
+<p>​     如果一个随机变量X的可能取值为<figure 
+	>
+	<a href="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwMDcxOTE3MTE1OTgucG5n?x-oss-process=image/format,png" >
+		<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwMDcxOTE3MTE1OTgucG5n?x-oss-process=image/format,png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure>，对应的概率为<figure 
+	>
+	<a href="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwMDcxOTE3MTE1OTgucG5n?x-oss-process=image/format,png" >
+		<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwMDcxOTE3MTE1OTgucG5n?x-oss-process=image/format,png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure>，则随机变量X的熵定义为<figure 
+	>
+	<a href="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwMDkwMDQ1Mzg0MjEucG5n?x-oss-process=image/format,png" >
+		<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwMDkwMDQ1Mzg0MjEucG5n?x-oss-process=image/format,png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<p>有了信息熵的定义，接下来开始学习相对熵。</p>
+<ol>
+<li>
+<p>相对熵的认识   相对熵又称互熵，交叉熵，鉴别信息，Kullback熵，Kullback-Leible散度（即KL散度）等。设p(x)和q(x) 是X取值的两个概率概率分布，则p对q的相对熵为<figure 
+	>
+	<a href="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwMzAxMDY3MTQ0NjMucG5n?x-oss-process=image/format,png" >
+		<img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwMzAxMDY3MTQ0NjMucG5n?x-oss-process=image/format,png"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<p><code>在一定程度上，熵可以度量两个随机变量的距离。KL散度是两个概率分布P和Q差别的非对称性的度量。KL散度是用来度量使用基于Q的编码来编码来自P的样本平均所需的额外的位元数。 典型情况下，P表示数据的真实分布，Q表示数据的理论分布，模型分布，或P的近似分布。</code></p>
+</li>
+</ol>
+<p>　2. 相对熵的性质   相对熵（KL散度）有两个主要的性质。如下</p>
+<pre><code> （1）尽管KL散度从直观上是个度量或距离函数，但它并不是一个真正的度量或者距离，因为它不具有对称性，即  ![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwNDIxMjU5Mzc0MTIucG5n?x-oss-process=image/format,png)
+
+ （2）相对熵的值为非负值，即![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMwLmNuYmxvZ3MuY29tL2Jsb2cvNTcxMjI3LzIwMTUwMS8wNzIwNDQzODcwMzc3NzQucG5n?x-oss-process=image/format,png)
+</code></pre>
+</blockquote>
+<ul>
+<li>说人话，就是<code>Dkl</code>叫KL散度，第一项是用来衡量距离的一种指标</li>
+</ul>
+<p>整个训练的过程用通俗的话说明一下，<strong>首先从标准正态分布中随机L个数据和原x经过hφ函数后得到隐含变量z，注意这里是为每一个样本x都随机L个数据来生成z，loss函数告诉我们两件事情：</strong></p>
+<p>第一件，希望z的分布和给定了x的条件下z的分布越接近越好</p>
+<p>第二件，希望给定了z的条件下反解回来的x和原分布越接近越好。本质上而言，<strong>VAE是给原x加上了随机噪声，同时希望可以反解回原来的值</strong></p>
+<p>中间隐含变量就非常神奇了，可以是高斯分布，也可以是伯努利分布，用概率分布来编码，在自动生成中有妙用。
+推理：</p>
+<p><figure 
+	>
+	<a href="https://oscimg.oschina.net/oscnet/d4ea13aaf22af12e62ba7ffc41f2a7e3f15.jpg" >
+		<img src="https://oscimg.oschina.net/oscnet/d4ea13aaf22af12e62ba7ffc41f2a7e3f15.jpg"
+			
+			
+			
+			loading="lazy"
+			>
+	</a>
+	
+</figure></p>
+<h3 id="原文博主的一些思考搬">原文博主的一些思考（搬）：</h3>
+<p>论文中只给出了可以这样做以及这样做的效果，但是论文中没有解释为什么这样做。</p>
+<p>其实这个问题比较好类比，训练数据都是正常的，就好比一个人生活的圈子里只有猫，突然来了一条狗，他就肯定不认识了，只知道和猫不同，那么通过数学中的线性回归来类推一下，根据一批正常点拟合了一条直线，有一个游离于这个群体的点，自然离这条直线很远。同样的可以用数据边界来解释，神经网络见过了大量的正常数据，便学习到了数据的边界，游离于边界外的数据，自然也可以摘出来。</p>
+<p>但是同样有一个问题，既然原始样本集里已经有正常数据和异常数据了，通过有监督训练一个分类模型就够了。但是真实的场景里，我们是不知道怎么标注数据的，如果说可以标注，肯定是基于人工指定的规则，既然有了规则，就基于规则写if else（这里是针对数据维度比较小的场景）了，何必要机器来学习，但是规则制定的是否正确还两说，比方说金融领域常见的风险评估，某个用户是否可以放贷给他，已知该用户的各种信息，例如：年龄、性别、职业、收入、信用卡账单等等，这里只是举一个小例子。</p>
+<p>以上的疑问，总结起来就两点</p>
+<p>1、如何标注数据，到底是先有鸡还是先有蛋</p>
+<p>2、基于定死的规则标注的数据是否正确可用</p>
+<p>那么，能不能完全无监督的让机器学习出识别这些异常数据的规则，我觉得通过Auto Encoder是可以做到的，首先，对于异常识别的场景，正常的样本数肯定占大多数，异常的只是少数，把整个样本集完全扔给Deep Auto Encoder，让他去学习，同样可以找出异常数据。</p>
+<h3 id="个人总结">个人总结</h3>
+<p>对比来看三种算法</p>
+<ol>
+<li>PCA：简单地进行降维采样，让低纬度的参数去学习“生成原始数据”的方法</li>
+<li>Deep Auto Encoder：对PCA进行拓展魔改，由原来单纯的线性变换拓展为非线性，对称拓展为非对称，并且可以自己设置中间的维度变换过程</li>
+<li>VAE：在前面的基础上，随机加入噪声，使得模型能够有较好的泛化性</li>
+</ol>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    
+    <section class="article-copyright">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <path d="M14.5 9a3.5 4 0 1 0 0 6" />
+</svg>
+
+
+
+        <span>Licensed under CC BY-NC-SA 4.0</span>
+    </section>
+    </footer>
+
+
+    
+</article>
+
+    <aside class="related-contents--wrapper">
+    
+    
+</aside>
+
+     
+    
+        
+    <div class="disqus-container">
+    <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hugo-theme-stack" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+
+<style>
+    .disqus-container {
+        background-color: var(--card-background);
+        border-radius: var(--card-border-radius);
+        box-shadow: var(--shadow-l1);
+        padding: var(--card-padding);
+    }
+</style>
+
+<script>
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (DISQUS) {
+            DISQUS.reset({
+                reload: true
+            });
+        }
+    })
+</script>
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2020 - 
+        
+        2022 coco&#39;s blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.5.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer="true"
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css"integrity="sha256-c0uckgykQ9v5k&#43;IqViZOZKc47Jn7KQil4/MP3ySA3F8="crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.css"integrity="sha256-SBLU4vv6CA6lHsZ1XyTdhyjJxCjPif/TRkjnsyGAGnE="crossorigin="anonymous"
+            >
+
+            </main>
+    
+        <aside class="sidebar right-sidebar sticky">
+            <section class="widget archives">
+                <div class="widget-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+                </div>
+                <h2 class="widget-title section-title">Table of contents</h2>
+                
+                <div class="widget--toc">
+                    <nav id="TableOfContents">
+  <ol>
+    <li>
+      <ol>
+        <li><a href="#pca">PCA</a></li>
+        <li><a href="#deep-auto-encoder">Deep Auto Encoder</a></li>
+        <li><a href="#auto-encoder用于异常检测">Auto Encoder用于异常检测</a></li>
+        <li><a href="#原文博主的一些思考搬">原文博主的一些思考（搬）：</a></li>
+        <li><a href="#个人总结">个人总结</a></li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+                </div>
+            </section>
+        </aside>
+    
+
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.5/dist/vibrant.min.js"integrity="sha256-5NovOZc4iwiAWTYIFiIM7DxKUXKWvpVEuMEPLzcm5/g="crossorigin="anonymous"
+                defer="false"
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
