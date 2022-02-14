@@ -6,7 +6,77 @@
         <description>Recent content on coco&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Mon, 07 Feb 2022 19:54:18 +0800</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Tue, 15 Feb 2022 00:28:30 +0800</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Docker部署web&#43;mysql</title>
+        <link>https://example.com/p/docker%E9%83%A8%E7%BD%B2web-mysql/</link>
+        <pubDate>Tue, 15 Feb 2022 00:28:30 +0800</pubDate>
+        
+        <guid>https://example.com/p/docker%E9%83%A8%E7%BD%B2web-mysql/</guid>
+        <description>&lt;img src="https://example.com/p/docker%E9%83%A8%E7%BD%B2web-mysql/gopher.png" alt="Featured image of post Docker部署web&#43;mysql" /&gt;&lt;h2 id=&#34;gomysql项目阿里云部署docker&#34;&gt;Go+Mysql项目阿里云部署(docker)&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;基于docker的Go-web+Mysql部署&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;安装docker,拉取mysql镜像&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Go-web项目配置文件：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;nt&#34;&gt;httpEngine&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#  addr: &amp;#34;127.0.0.1&amp;#34; # 本地测试&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;0.0.0.0&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;	 &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 对外开放(重要)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;port&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;8080&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;		 &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 监听端口&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;templates&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;templates/*&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;   &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 数据库配置&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;#  Addr: &amp;#34;127.0.0.1&amp;#34;  # 本地数据库&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Addr&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;mysql&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;       &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# mysql容器作为数据库(后续用 --link docker网络进行连接)&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Port&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;3306&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;        &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# mysql开放端口&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;User&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;root&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Pass&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;xxxxxxx&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;DB&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;yuheng&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;		  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 数据库名&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;DB_MAX_OPEN_CONNS&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;DB_MAX_IDLE_CONNS&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;DB_MAX_LIFETIME_CONNS&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;7200&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;basic&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;jwt&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;secret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;xxxxx&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;编写dockerfile&#34;&gt;编写Dockerfile&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-dockerfile&#34; data-lang=&#34;dockerfile&#34;&gt;&lt;span class=&#34;c&#34;&gt;# syntax=docker/dockerfile:1&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; golang:1.17-alpine&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;MAINTAINER&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; cocoshe&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WORKDIR&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; /yuheng&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;COPY&lt;/span&gt; . .&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;RUN&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;GOPROXY&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;https://goproxy.io &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; go mod tidy &lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; go build&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;EXPOSE&lt;/span&gt;&lt;span class=&#34;s&#34;&gt; 8080&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;CMD&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;./backend&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;区别：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;RUN&lt;/code&gt;是docker build的时候(制作image)就早早运行了&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;CMD&lt;/code&gt;是docker run真正运行的时候执行(多个&lt;code&gt;CMD&lt;/code&gt;则只执行最后一个)&lt;/p&gt;
+&lt;p&gt;Dockerfile中RUN，CMD和ENTRYPOINT都能够用于执行命令，下面是三者的主要用途：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;RUN命令执行命令并创建新的镜像层，通常用于安装软件包&lt;/li&gt;
+&lt;li&gt;CMD命令设置容器启动后默认执行的命令及其参数，但CMD设置的命令能够被&lt;code&gt;docker run&lt;/code&gt;命令后面的命令行参数替换&lt;/li&gt;
+&lt;li&gt;ENTRYPOINT配置容器启动时的执行命令（不会被忽略，一定会被执行，即使运行 &lt;code&gt;docker run&lt;/code&gt;时指定了其他命令）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;利用dockerfile制作镜像并上传&#34;&gt;利用Dockerfile制作镜像并上传&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;docker build -t cocoshe/yuheng:0.2 .
+&lt;span class=&#34;c1&#34;&gt;# -t [image name]:[tagname]&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# [-f] 若dockerfile名字不是~,那就要用-f来指定&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# 最后一个点(.)表示dockerfile在当前目录下&lt;/span&gt;
+
+docker push cocoshe/yuheng:0.2
+&lt;span class=&#34;c1&#34;&gt;# push到dockerhub仓库&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;服务器部署&#34;&gt;服务器部署&lt;/h3&gt;
+&lt;p&gt;拉取mysql和仓库中自己制作的image&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 后台启动mysql&lt;/span&gt;
+docker run -d -p 3306:3306 -v /home/mysql/conf:/etc/mysql/conf.d -v /home/mysql/data:/var/lib/mysql -e &lt;span class=&#34;nv&#34;&gt;MYSQL_ROOT_PASSWORD&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;xxxxxx --name mysql01 mysql
+
+&lt;span class=&#34;c1&#34;&gt;# 后台启动go-web  注意--link [mysql容器名]:[在web容器中映射名]&lt;/span&gt;
+&lt;span class=&#34;c1&#34;&gt;# 阿里云开放的是80端口,web服务监听的是8080,在这里做了一个端口映射(-p)&lt;/span&gt;
+docker run --name yuheng01 -p 80:8080 --link mysql01:mysql -it -d cocoshe/yuheng:0.2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        </item>
+        <item>
         <title>Docker</title>
         <link>https://example.com/p/docker/</link>
         <pubDate>Mon, 07 Feb 2022 19:54:18 +0800</pubDate>
@@ -102,17 +172,12 @@ docker run -d -p 3310:3306 -e &lt;span class=&#34;nv&#34;&gt;MYSQL_ROOT_PASSWORD
 &lt;/ol&gt;
 &lt;p&gt;example：&lt;/p&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 134; 
-			flex-basis: 322px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/docker/image-20220124003316279.png&#34; data-size=&#34;607x452&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/docker/image-20220124003316279.png&#34;
-			width=&#34;607&#34;
-			height=&#34;452&#34;
-			srcset=&#34;https://example.com/p/docker/image-20220124003316279_hu5df53a1ece68cdfea5cc614e5cb4e763_145797_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124003316279_hu5df53a1ece68cdfea5cc614e5cb4e763_145797_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/image-20220124003316279.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/image-20220124003316279.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20220124003316279&#34;&gt;
 	&lt;/a&gt;
@@ -122,17 +187,12 @@ docker run -d -p 3310:3306 -e &lt;span class=&#34;nv&#34;&gt;MYSQL_ROOT_PASSWORD
 &lt;/figure&gt;&lt;/p&gt;
 &lt;h3 id=&#34;常用指令&#34;&gt;常用指令&lt;/h3&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 263; 
-			flex-basis: 633px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/docker/image-20220124004209145.png&#34; data-size=&#34;889x337&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/docker/image-20220124004209145.png&#34;
-			width=&#34;889&#34;
-			height=&#34;337&#34;
-			srcset=&#34;https://example.com/p/docker/image-20220124004209145_hu237caaa0f169da32c7351c4df81fbb98_232736_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124004209145_hu237caaa0f169da32c7351c4df81fbb98_232736_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/image-20220124004209145.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/image-20220124004209145.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20220124004209145&#34;&gt;
 	&lt;/a&gt;
@@ -141,17 +201,12 @@ docker run -d -p 3310:3306 -e &lt;span class=&#34;nv&#34;&gt;MYSQL_ROOT_PASSWORD
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 178; 
-			flex-basis: 429px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/docker/image-20220124003758969.png&#34; data-size=&#34;1032x577&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/docker/image-20220124003758969.png&#34;
-			width=&#34;1032&#34;
-			height=&#34;577&#34;
-			srcset=&#34;https://example.com/p/docker/image-20220124003758969_hud4acd096eb3d7b63ea818d4f23169fde_412981_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124003758969_hud4acd096eb3d7b63ea818d4f23169fde_412981_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/image-20220124003758969.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/image-20220124003758969.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20220124003758969&#34;&gt;
 	&lt;/a&gt;
@@ -160,17 +215,12 @@ docker run -d -p 3310:3306 -e &lt;span class=&#34;nv&#34;&gt;MYSQL_ROOT_PASSWORD
 	
 &lt;/figure&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 149; 
-			flex-basis: 357px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/docker/image-20220124110414254.png&#34; data-size=&#34;1140x765&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/docker/image-20220124110414254.png&#34;
-			width=&#34;1140&#34;
-			height=&#34;765&#34;
-			srcset=&#34;https://example.com/p/docker/image-20220124110414254_hu25212a2af48c332cd6beb8558fa7a9f4_122240_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124110414254_hu25212a2af48c332cd6beb8558fa7a9f4_122240_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/image-20220124110414254.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/image-20220124110414254.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20220124110414254&#34;&gt;
 	&lt;/a&gt;
@@ -186,17 +236,12 @@ docker run -d -p 3310:3306 -e &lt;span class=&#34;nv&#34;&gt;MYSQL_ROOT_PASSWORD
 docker tag [id] [username]/[image]:[tag]
 docker push [username]/[image]:[TAG]
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 122; 
-			flex-basis: 293px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/docker/image-20220124104453083.png&#34; data-size=&#34;778x637&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/docker/image-20220124104453083.png&#34;
-			width=&#34;778&#34;
-			height=&#34;637&#34;
-			srcset=&#34;https://example.com/p/docker/image-20220124104453083_hu8d67eff3c65652cc3d23a4be9a8bd258_220259_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124104453083_hu8d67eff3c65652cc3d23a4be9a8bd258_220259_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/image-20220124104453083.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/image-20220124104453083.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20220124104453083&#34;&gt;
 	&lt;/a&gt;
@@ -221,17 +266,12 @@ docker push [username]/[image]:[TAG]
 &lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 154; 
-			flex-basis: 370px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/docker/image-20220124131030034.png&#34; data-size=&#34;973x630&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/docker/image-20220124131030034.png&#34;
-			width=&#34;973&#34;
-			height=&#34;630&#34;
-			srcset=&#34;https://example.com/p/docker/image-20220124131030034_huf3b29c214593a95734778aa3f154e733_68490_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124131030034_huf3b29c214593a95734778aa3f154e733_68490_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/image-20220124131030034.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/image-20220124131030034.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20220124131030034&#34;&gt;
 	&lt;/a&gt;
@@ -245,17 +285,12 @@ docker push [username]/[image]:[TAG]
 &lt;p&gt;小结&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 138; 
-			flex-basis: 333px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/docker/image-20220124131533162.png&#34; data-size=&#34;983x708&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/docker/image-20220124131533162.png&#34;
-			width=&#34;983&#34;
-			height=&#34;708&#34;
-			srcset=&#34;https://example.com/p/docker/image-20220124131533162_hu832e6256b2e157abfed71319956bee45_68267_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220124131533162_hu832e6256b2e157abfed71319956bee45_68267_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/image-20220124131533162.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/image-20220124131533162.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20220124131533162&#34;&gt;
 	&lt;/a&gt;
@@ -287,17 +322,12 @@ docker run -d -P --name tomcat --net bridge tomcat
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;服务器部署&#34;&gt;服务器部署&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;注意：监听的地址不是localhost，要用ip addr看一眼！！！或者进hosts看&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;figure 
-	
-		class=&#34;gallery-image&#34; 
-		style=&#34;
-			flex-grow: 222; 
-			flex-basis: 533px&#34;
 	&gt;
-	&lt;a href=&#34;https://example.com/p/docker/image-20220125184132253.png&#34; data-size=&#34;489x220&#34;&gt;
-		&lt;img src=&#34;https://example.com/p/docker/image-20220125184132253.png&#34;
-			width=&#34;489&#34;
-			height=&#34;220&#34;
-			srcset=&#34;https://example.com/p/docker/image-20220125184132253_huff451025db0665b00428abbeec40ab45_14536_480x0_resize_box_3.png 480w, https://example.com/p/docker/image-20220125184132253_huff451025db0665b00428abbeec40ab45_14536_1024x0_resize_box_3.png 1024w&#34;
+	&lt;a href=&#34;https://example.com/image-20220125184132253.png&#34; &gt;
+		&lt;img src=&#34;https://example.com/image-20220125184132253.png&#34;
+			
+			
+			
 			loading=&#34;lazy&#34;
 			alt=&#34;image-20220125184132253&#34;&gt;
 	&lt;/a&gt;

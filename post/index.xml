@@ -6,7 +6,23 @@
     <description>Recent content in Posts on coco&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 07 Feb 2022 19:54:18 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 15 Feb 2022 00:28:30 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker部署web&#43;mysql</title>
+      <link>https://example.com/p/docker%E9%83%A8%E7%BD%B2web-mysql/</link>
+      <pubDate>Tue, 15 Feb 2022 00:28:30 +0800</pubDate>
+      
+      <guid>https://example.com/p/docker%E9%83%A8%E7%BD%B2web-mysql/</guid>
+      <description>Go+Mysql项目阿里云部署(docker) 基于docker的Go-web+Mysql部署
+ 安装docker,拉取mysql镜像
+ Go-web项目配置文件：
+httpEngine:# addr: &amp;#34;127.0.0.1&amp;#34; # 本地测试addr:&amp;#34;0.0.0.0&amp;#34;# 对外开放(重要)port:&amp;#34;8080&amp;#34;# 监听端口templates:&amp;#34;templates/*&amp;#34;db:# 数据库配置# Addr: &amp;#34;127.0.0.1&amp;#34; # 本地数据库Addr:&amp;#34;mysql&amp;#34;# mysql容器作为数据库(后续用 --link docker网络进行连接)Port:&amp;#34;3306&amp;#34;# mysql开放端口User:&amp;#34;root&amp;#34;Pass:&amp;#34;xxxxxxx&amp;#34;DB:&amp;#34;yuheng&amp;#34;# 数据库名DB_MAX_OPEN_CONNS:20DB_MAX_IDLE_CONNS:10DB_MAX_LIFETIME_CONNS:7200basic:jwt:secret:&amp;#34;xxxxx&amp;#34;编写Dockerfile # syntax=docker/dockerfile:1FROMgolang:1.17-alpineMAINTAINERcocosheWORKDIR/yuhengCOPY . .RUN export GOPROXY=https://goproxy.io &amp;amp;&amp;amp; go mod tidy &amp;amp;&amp;amp; go buildEXPOSE8080CMD [&amp;#34;./backend&amp;#34;]区别：
+RUN是docker build的时候(制作image)就早早运行了
+CMD是docker run真正运行的时候执行(多个CMD则只执行最后一个)
+Dockerfile中RUN，CMD和ENTRYPOINT都能够用于执行命令，下面是三者的主要用途：
+ RUN命令执行命令并创建新的镜像层，通常用于安装软件包 CMD命令设置容器启动后默认执行的命令及其参数，但CMD设置的命令能够被docker run命令后面的命令行参数替换 ENTRYPOINT配置容器启动时的执行命令（不会被忽略，一定会被执行，即使运行 docker run时指定了其他命令）  利用Dockerfile制作镜像并上传 docker build -t cocoshe/yuheng:0.2 . # -t [image name]:[tagname] # [-f] 若dockerfile名字不是~,那就要用-f来指定 # 最后一个点(.)表示dockerfile在当前目录下 docker push cocoshe/yuheng:0.2 # push到dockerhub仓库 服务器部署 拉取mysql和仓库中自己制作的image</description>
+    </item>
+    
     <item>
       <title>Docker</title>
       <link>https://example.com/p/docker/</link>
