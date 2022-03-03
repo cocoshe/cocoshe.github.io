@@ -6,7 +6,21 @@
     <description>Recent content in Posts on coco&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 03 Mar 2022 15:25:32 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 03 Mar 2022 15:39:36 +0800</lastBuildDate><atom:link href="https://example.com/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ReSys(2)基于图的模型</title>
+      <link>https://example.com/p/resys2%E5%9F%BA%E4%BA%8E%E5%9B%BE%E7%9A%84%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Thu, 03 Mar 2022 15:39:36 +0800</pubDate>
+      
+      <guid>https://example.com/p/resys2%E5%9F%BA%E4%BA%8E%E5%9B%BE%E7%9A%84%E6%A8%A1%E5%9E%8B/</guid>
+      <description>基于图的推荐算法  image 
+主要是要研究顶点之间的相关性
+ 主要决定因素：  两个顶点之间的路径数 两个顶点之间的路径长度 两个顶点之间的路径经过的顶点   于是“相关性高”一般具有如下特征：  两个顶点之间有很多路径 连接两个顶点之间的路径都比较短 连接两个顶点之间的路径不会经过出度比较大的顶点     image-20220303171513507 
+ image-20220303171553215 
+代码实现：
+def PersonalRank(G, alpha, root, max_step): rank = dict() rank = {x:0 for x in G.keys()} rank[root] = 1 #开始迭代 begin=time.time() for k in range(max_step): tmp = {x:0 for x in G.keys()} #取节点i和它的出边尾节点集合ri for i, ri in G.items(): #取节点i的出边的尾节点j以及边E(i,j)的权重wij, 边的权重都为1，归一化之后就上1/len(ri) for j, wij in ri.</description>
+    </item>
+    
     <item>
       <title>ReSys(1)从协同过滤到隐语义模型</title>
       <link>https://example.com/p/resys1%E4%BB%8E%E5%8D%8F%E5%90%8C%E8%BF%87%E6%BB%A4%E5%88%B0%E9%9A%90%E8%AF%AD%E4%B9%89%E6%A8%A1%E5%9E%8B/</link>
